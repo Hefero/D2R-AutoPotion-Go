@@ -8,10 +8,14 @@ Automatically uses HP and Mana Potion
 <br />
 Parameter configuration on config/config.yaml
 <br />
-
+### Instructions
+<br />
+### Windows Ready Binary
 [Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
-
-Or with source using Golang
+<br />
+### Or
+### Build/Execute from Source
+<br />
 - Download GoLang Install [Download Golang](https://go.dev/doc/install)
 
 - Clone repository:
