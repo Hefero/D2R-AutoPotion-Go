@@ -14,7 +14,7 @@ Parameter configuration on config/config.yaml
 - [Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
 ### Or
 ### - Build/Execute from Source
-- Download and Install [GoLang](Download Golang](https://go.dev/doc/install)
+- Download and Install [GoLang](https://go.dev/doc/install)
 - Clone repository:
 ```ruby
 $ git clone https://github.com/Hefero/D2R-AutoPotion-Go
