@@ -8,7 +8,6 @@ import (
 
 	lifewatcher "github.com/hectorgimenez/d2go/cmd/lifewatcher/internal"
 	"github.com/hectorgimenez/d2go/pkg/memory"
-	"github.com/hectorgimenez/d2go/pkg/nip"
 )
 
 func main() {
@@ -19,12 +18,7 @@ func main() {
 
 	gr := memory.NewGameReader(process)
 
-	rules, err := nip.ReadDir("config/itemfilter/")
-	if err != nil {
-		log.Fatalf("error reading NIP files: %s", err.Error())
-	}
-
-	watcher := lifewatcher.NewWatcher(gr, rules)
+	watcher := lifewatcher.NewWatcher(gr)
 
 	ctx := contextWithSigterm(context.Background())
 	err = watcher.Start(ctx)

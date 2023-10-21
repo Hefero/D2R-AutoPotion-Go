@@ -9,26 +9,12 @@ import (
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
 	"github.com/faiface/beep/wav"
-	"github.com/hectorgimenez/d2go/pkg/data"
-	"github.com/hectorgimenez/d2go/pkg/data/area"
-	"github.com/hectorgimenez/d2go/pkg/data/item"
 	"github.com/hectorgimenez/d2go/pkg/memory"
-	"github.com/hectorgimenez/d2go/pkg/nip"
 	"github.com/micmonay/keybd_event"
 )
 
 type Watcher struct {
-	gr                     *memory.GameReader
-	rules                  []nip.Rule
-	alreadyNotifiedItemIDs []itemFootprint
-}
-
-type itemFootprint struct {
-	detectedAt time.Time
-	area       area.Area
-	position   data.Position
-	name       item.Name
-	quality    item.Quality
+	gr *memory.GameReader
 }
 
 type Manager struct {
@@ -46,17 +32,12 @@ const (
 	rejuvInterval       = time.Second * 2
 )
 
-func (fp itemFootprint) Match(area area.Area, i data.Item) bool {
-	return fp.area == area && fp.position == i.Position && fp.name == i.Name && fp.quality == i.Quality
-}
-
-func NewWatcher(gr *memory.GameReader, rules []nip.Rule) *Watcher {
-	return &Watcher{gr: gr, rules: rules}
+func NewWatcher(gr *memory.GameReader) *Watcher {
+	return &Watcher{gr: gr}
 }
 
 func (w *Watcher) Start(ctx context.Context) error {
 	var manager = Manager{}
-	w.alreadyNotifiedItemIDs = make([]itemFootprint, 0)
 	audioBuffer, err := initAudio()
 	if err != nil {
 		return err
@@ -67,17 +48,15 @@ func (w *Watcher) Start(ctx context.Context) error {
 		case <-ctx.Done():
 			return nil
 		default:
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(10 * time.Millisecond)
 
 			d := w.gr.GetData()
-
 			HPPercent := d.PlayerUnit.HPPercent()
 			MPPercent := d.PlayerUnit.MPPercent()
 
 			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), HPPercent, MPPercent)
-
 			usedRejuv := false
-			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 30) {
+			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 60) {
 				UseRejuv()
 				if usedRejuv {
 					manager.lastRejuv = time.Now()
@@ -93,7 +72,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 				}
 
-				if d.PlayerUnit.MPPercent() <= 65 && time.Since(manager.lastMana) > manaInterval {
+				if d.PlayerUnit.MPPercent() <= 80 && time.Since(manager.lastMana) > manaInterval {
 					UseMana()
 					manager.lastMana = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))

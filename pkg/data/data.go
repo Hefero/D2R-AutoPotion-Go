@@ -198,7 +198,7 @@ func (pu PlayerUnit) MPPercent() int {
 		if maxManaBO < pu.Stats[stat.Mana] {
 			maxManaBO = pu.Stats[stat.Mana]
 		}
-		return int((float64(pu.Stats[stat.Mana]) / float64(maxLifeBO)) * 100)
+		return int((float64(pu.Stats[stat.Mana]) / float64(maxManaBO)) * 100)
 	}
 
 	if maxMana < pu.Stats[stat.Mana] {
