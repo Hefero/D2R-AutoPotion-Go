@@ -13,13 +13,20 @@ Parameter configuration on config/config.yaml
 
 Or with source using Golang
 - Download GoLang Install [Download Golang](https://go.dev/doc/install)
-- To execute in Terminal from source:
+
+- Clone repository:
 ```ruby
+$ git clone https://github.com/Hefero/D2R-AutoPotion-Go
+```
+- Then execute in Terminal from source:
+```ruby
+$ cd D2R-AutoPotion-Go
 $ go run main.go
 ```
-- To compile main.exe:
+- Or compile and execute main.exe:
 ```ruby
 $ go build main.go
+$ main.exe
 ```
 
 ### Libraries
