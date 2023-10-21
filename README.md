@@ -11,11 +11,15 @@ Parameter configuration on config/config.yaml
 
 [Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
 
-Or compile with source using Golang
+Or with source using Golang
 - Download GoLang Install [Download Golang](https://go.dev/doc/install)
-- Execute in Terminal:
+- To execute in Terminal from source:
 ```ruby
 $ go run main.go
+```
+- To compile main.exe:
+```ruby
+$ go build main.go
 ```
 
 ### Libraries
