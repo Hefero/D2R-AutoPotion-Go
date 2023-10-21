@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
 	"github.com/faiface/beep/wav"
-	"github.com/hectorgimenez/d2go/cmd/config"
-	"github.com/hectorgimenez/d2go/pkg/memory"
 	"github.com/micmonay/keybd_event"
 )
 

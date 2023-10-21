@@ -1,8 +1,8 @@
 package data
 
 import (
-	"github.com/hectorgimenez/d2go/pkg/data/npc"
-	"github.com/hectorgimenez/d2go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/npc"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 )
 
 type NPC struct {

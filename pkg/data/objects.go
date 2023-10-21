@@ -1,6 +1,6 @@
 package data
 
-import "github.com/hectorgimenez/d2go/pkg/data/object"
+import "github.com/Hefero/D2R-AutoPotion-Go/pkg/data/object"
 
 type Object struct {
 	Name         object.Name

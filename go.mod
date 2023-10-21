@@ -1,4 +1,4 @@
-module github.com/hectorgimenez/d2go
+module github.com/Hefero/D2R-AutoPotion-Go
 
 go 1.20
 

@@ -3,7 +3,7 @@ package data
 import (
 	"strings"
 
-	"github.com/hectorgimenez/d2go/pkg/data/item"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/item"
 )
 
 const (

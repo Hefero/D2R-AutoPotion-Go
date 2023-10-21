@@ -1,6 +1,6 @@
 package itemfilter
 
-import "github.com/hectorgimenez/d2go/pkg/nip"
+import "github.com/Hefero/D2R-AutoPotion-Go/pkg/nip"
 
 type evaluationChain struct {
 	links []link

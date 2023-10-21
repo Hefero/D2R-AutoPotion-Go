@@ -3,7 +3,7 @@ package itemfilter
 import (
 	"testing"
 
-	"github.com/hectorgimenez/d2go/pkg/nip"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/nip"
 )
 
 func Test_evaluationChain_Evaluate(t *testing.T) {

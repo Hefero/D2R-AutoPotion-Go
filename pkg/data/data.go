@@ -3,10 +3,10 @@ package data
 import (
 	"strings"
 
-	"github.com/hectorgimenez/d2go/pkg/data/area"
-	"github.com/hectorgimenez/d2go/pkg/data/skill"
-	"github.com/hectorgimenez/d2go/pkg/data/stat"
-	"github.com/hectorgimenez/d2go/pkg/data/state"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/area"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/skill"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/state"
 )
 
 // since stat.MaxLife is returning max life without stats, we are setting the max life value that we read from the

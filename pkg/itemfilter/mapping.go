@@ -1,8 +1,8 @@
 package itemfilter
 
 import (
-	"github.com/hectorgimenez/d2go/pkg/data/item"
-	"github.com/hectorgimenez/d2go/pkg/nip"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/item"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/nip"
 )
 
 var qualities = map[string]item.Quality{

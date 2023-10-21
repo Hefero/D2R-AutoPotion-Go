@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/hectorgimenez/d2go/cmd/config"
-	"github.com/hectorgimenez/d2go/cmd/lifewatcher"
-	"github.com/hectorgimenez/d2go/pkg/memory"
+	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
+	"github.com/Hefero/D2R-AutoPotion-Go/cmd/lifewatcher"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package data
 import (
 	"strings"
 
-	"github.com/hectorgimenez/d2go/pkg/data/item"
-	"github.com/hectorgimenez/d2go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/item"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 )
 
 type Items struct {

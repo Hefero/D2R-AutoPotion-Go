@@ -1,7 +1,7 @@
 package memory
 
 import (
-	"github.com/hectorgimenez/d2go/pkg/data/area"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/area"
 )
 
 func (gd *GameReader) TerrorZones() (areas []area.Area) {

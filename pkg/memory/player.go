@@ -1,11 +1,11 @@
 package memory
 
 import (
-	"github.com/hectorgimenez/d2go/pkg/data"
-	"github.com/hectorgimenez/d2go/pkg/data/area"
-	"github.com/hectorgimenez/d2go/pkg/data/skill"
-	"github.com/hectorgimenez/d2go/pkg/data/stat"
-	"github.com/hectorgimenez/d2go/pkg/data/state"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/area"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/skill"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/state"
 )
 
 func (gd *GameReader) GetPlayerUnitPtr(roster data.Roster) (playerUnitPtr uintptr, corpse data.Corpse) {

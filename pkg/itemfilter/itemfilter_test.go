@@ -3,9 +3,9 @@ package itemfilter
 import (
 	"testing"
 
-	"github.com/hectorgimenez/d2go/pkg/data"
-	"github.com/hectorgimenez/d2go/pkg/data/item"
-	"github.com/hectorgimenez/d2go/pkg/nip"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/item"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/nip"
 	"github.com/stretchr/testify/require"
 )
 

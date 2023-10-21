@@ -1,11 +1,11 @@
 package itemfilter
 
 import (
-	"github.com/hectorgimenez/d2go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 	"strings"
 
-	"github.com/hectorgimenez/d2go/pkg/data"
-	"github.com/hectorgimenez/d2go/pkg/nip"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/nip"
 )
 
 func Evaluate(i data.Item, rules []nip.Rule) bool {
