@@ -2,7 +2,6 @@ package lifewatcher
 
 import (
 	"context"
-	"log"
 	"os"
 	"time"
 
@@ -49,13 +48,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 		case <-ctx.Done():
 			return nil
 		default:
-			time.Sleep(10 * time.Millisecond)
-
 			d := w.gr.GetData()
-			HPPercent := d.PlayerUnit.HPPercent()
-			MPPercent := d.PlayerUnit.MPPercent()
-
-			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), HPPercent, MPPercent)
 			usedRejuv := false
 			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
 				UseRejuv()
