@@ -30,13 +30,6 @@ type Manager struct {
 	lastDebugMsg  time.Time
 }
 
-const (
-	healingInterval     = time.Second * 4
-	healingMercInterval = time.Second * 6
-	manaInterval        = time.Second * 5
-	rejuvInterval       = time.Second * 1
-)
-
 func NewWatcher(gr *memory.GameReader) *Watcher {
 	return &Watcher{gr: gr}
 }
@@ -63,7 +56,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 			}
 
 			usedRejuv := false
-			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
+			if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
 				UseRejuv()
 				usedRejuv := true
 				if usedRejuv {
@@ -74,13 +67,13 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			if !usedRejuv {
 
-				if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > healingInterval {
+				if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(config.Config.Timings.HealingInterval)*time.Second) {
 					UseHP()
 					manager.lastHeal = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 				}
 
-				if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > manaInterval {
+				if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
 					UseMana()
 					manager.lastMana = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
@@ -90,7 +83,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 			// Mercenary
 			if d.MercHPPercent() > 0 {
 				usedMercRejuv := false
-				if time.Since(manager.lastRejuvMerc) > rejuvInterval && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
+				if time.Since(manager.lastRejuvMerc) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
 					UseMercRejuv()
 					usedMercRejuv := true
 					if usedMercRejuv {
@@ -101,7 +94,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 				if !usedMercRejuv {
 
-					if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > healingMercInterval {
+					if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
 						UseHPMerc()
 						manager.lastMercHeal = time.Now()
 						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
