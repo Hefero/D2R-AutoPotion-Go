@@ -2,7 +2,7 @@
 
 ---
 
-Tool for Diablo 2: Resurrected written in GoLang. 
+Tool for Diablo 2: Resurrected written in GoLang. Based on [d2rgo library](https://github.com/hectorgimenez/d2go/) by [hectorgimenez](https://github.com/hectorgimenez)
 <br />
 Automatically uses HP and Mana Potion
 <br />
@@ -37,7 +37,7 @@ $ main.exe
 - [memory](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/pkg/memory) - D2R memory reader (it provides the data
   structures)
 
-### Tools
+### Other Tools
 
 - [https://github.com/hectorgimenez/d2go/cmd/itemwatcher](https://github.com/hectorgimenez/d2go/tree/main/cmd/itemwatcher) - Small tool that plays a sound
   when an item passing the filtering process is dropped
