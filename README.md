@@ -9,7 +9,26 @@ Automatically uses HP and Mana Potion
 Parameter configuration on config/config.yaml
 <br />
 
-[Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows
+[Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
+
+Or with source using Golang
+- Download GoLang Install [Download Golang](https://go.dev/doc/install)
+
+- Clone repository:
+```ruby
+$ git clone https://github.com/Hefero/D2R-AutoPotion-Go
+```
+- Then execute in Terminal from source:
+```ruby
+$ cd D2R-AutoPotion-Go
+$ go run main.go
+```
+- Or compile and execute main.exe:
+```ruby
+$ cd D2R-AutoPotion-Go
+$ go build main.go
+$ main.exe
+```
 
 ### Libraries
 

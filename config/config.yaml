@@ -6,12 +6,12 @@ health: # Healing configuration, all values in %
   mercHealingPotionAt: 60
   mercRejuvPotionAt: 20
 
-bindings:
+bindings: # Hotkey configuration for potions
   potionHP: 1
   potionMANA: 4
   potionREJUV: 2
 
-timings:
+timings: # Delay time beetween actions (seconds)
   rejuvInterval: 1
   healingInterval: 4
   manaInterval: 5
