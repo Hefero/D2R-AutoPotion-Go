@@ -118,12 +118,27 @@ func initAudio() (*beep.Buffer, error) {
 	return buffer, nil
 }
 
+func getKey(key int) int {
+	switch key {
+	case 1:
+		return keybd_event.VK_1
+	case 2:
+		return keybd_event.VK_2
+	case 3:
+		return keybd_event.VK_3
+	case 4:
+		return keybd_event.VK_4
+	default:
+		return 0
+	}
+}
+
 func UseHP() {
 	kb, err := keybd_event.NewKeyBonding()
 	if err != nil {
 	}
 	kb.HasSHIFT(false)
-	kb.SetKeys(keybd_event.VK_1)
+	kb.SetKeys(getKey(config.Config.Bindings.PotionHP))
 	err = kb.Launching()
 }
 
@@ -132,7 +147,7 @@ func UseMana() {
 	if err != nil {
 	}
 	kb.HasSHIFT(false)
-	kb.SetKeys(keybd_event.VK_4)
+	kb.SetKeys(getKey(config.Config.Bindings.PotionMANA))
 	err = kb.Launching()
 }
 
@@ -141,7 +156,7 @@ func UseHPMerc() {
 	if err != nil {
 	}
 	kb.HasSHIFT(true)
-	kb.SetKeys(keybd_event.VK_1)
+	kb.SetKeys(getKey(config.Config.Bindings.PotionHP))
 	err = kb.Launching()
 	kb.HasSHIFT(false)
 }

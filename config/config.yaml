@@ -5,3 +5,8 @@ health: # Healing configuration, all values in %
   rejuvPotionAtMana: 40
   mercHealingPotionAt: 60
   mercRejuvPotionAt: 20
+
+bindings:
+  potionHP: 1
+  potionMANA: 4
+  potionREJUV: 2  

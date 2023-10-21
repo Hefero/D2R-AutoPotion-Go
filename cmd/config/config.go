@@ -19,9 +19,12 @@ type StructConfig struct {
 		RejuvPotionAtMana   int `yaml:"rejuvPotionAtMana"`
 		MercHealingPotionAt int `yaml:"mercHealingPotionAt"`
 		MercRejuvPotionAt   int `yaml:"mercRejuvPotionAt"`
-		ChickenAt           int `yaml:"chickenAt"`
-		MercChickenAt       int `yaml:"mercChickenAt"`
 	} `yaml:"health"`
+	Bindings struct {
+		PotionHP    int `yaml:"potionHP"`
+		PotionMANA  int `yaml:"potionMANA"`
+		PotionREJUV int `yaml:"potionREJUV"`
+	} `yaml:"bindings"`
 }
 
 // Load reads the config.ini file and returns a Config struct filled with data from the ini file
