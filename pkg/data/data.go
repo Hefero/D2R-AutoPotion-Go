@@ -189,7 +189,7 @@ func (pu PlayerUnit) MPPercent() int {
 		return 100
 	}
 
-	if maxLifeBO == 0 && maxLife == 0 {
+	if maxManaBO == 0 && maxMana == 0 {
 		maxMana = pu.Stats[stat.MaxMana]
 		maxManaBO = pu.Stats[stat.MaxMana]
 	}
