@@ -11,7 +11,7 @@ Parameter configuration on config/config.yaml
 ### Instructions
 <br />
 ### Windows Ready Binary
-[Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
+- [Windows .zip](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows (just run main.exe)
 <br />
 ### Or
 ### Build/Execute from Source
