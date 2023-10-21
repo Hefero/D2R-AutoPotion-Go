@@ -10,3 +10,9 @@ bindings:
   potionHP: 1
   potionMANA: 4
   potionREJUV: 2
+
+timings:
+  rejuvInterval: 1
+  healingInterval: 4
+  manaInterval: 5
+  healingMercInterval: 6

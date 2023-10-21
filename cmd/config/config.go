@@ -25,6 +25,12 @@ type StructConfig struct {
 		PotionMANA  int `yaml:"potionMANA"`
 		PotionREJUV int `yaml:"potionREJUV"`
 	} `yaml:"bindings"`
+	Timings struct {
+		RejuvInterval       int `yaml:"rejuvInterval"`
+		HealingInterval     int `yaml:"healingInterval"`
+		ManaInterval        int `yaml:"manaInterval"`
+		HealingMercInterval int `yaml:"healingMercInterval"`
+	} `yaml:"timings"`
 }
 
 // Load reads the config.ini file and returns a Config struct filled with data from the ini file
