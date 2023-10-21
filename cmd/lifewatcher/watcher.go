@@ -50,8 +50,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 			d := w.gr.GetData()
 
 			if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
-				//log.Printf("/n/r Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
-				log.Printf("/n/r Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent())
+				//log.Printf("Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
+				log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent())
 				manager.lastDebugMsg = time.Now()
 			}
 
