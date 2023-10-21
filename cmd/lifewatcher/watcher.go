@@ -2,10 +2,13 @@ package lifewatcher
 
 import (
 	"context"
+	"log"
 	"os"
 	"time"
 
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
@@ -15,6 +18,7 @@ import (
 
 type Watcher struct {
 	gr *memory.GameReader
+	pr *data.Params
 }
 
 type Manager struct {
@@ -23,6 +27,7 @@ type Manager struct {
 	lastHeal      time.Time
 	lastMana      time.Time
 	lastMercHeal  time.Time
+	lastDebugMsg  time.Time
 }
 
 const (
@@ -39,6 +44,7 @@ func NewWatcher(gr *memory.GameReader) *Watcher {
 func (w *Watcher) Start(ctx context.Context) error {
 	var manager = Manager{}
 	audioBuffer, err := initAudio()
+
 	if err != nil {
 		return err
 	}
@@ -49,6 +55,13 @@ func (w *Watcher) Start(ctx context.Context) error {
 			return nil
 		default:
 			d := w.gr.GetData()
+
+			if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
+				//log.Printf("/n/r Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
+				log.Printf("/n/r Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent())
+				manager.lastDebugMsg = time.Now()
+			}
+
 			usedRejuv := false
 			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
 				UseRejuv()

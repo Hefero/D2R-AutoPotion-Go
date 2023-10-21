@@ -9,4 +9,4 @@ health: # Healing configuration, all values in %
 bindings:
   potionHP: 1
   potionMANA: 4
-  potionREJUV: 2  
+  potionREJUV: 2

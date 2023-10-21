@@ -12,10 +12,6 @@ import (
 // since stat.MaxLife is returning max life without stats, we are setting the max life value that we read from the
 // game memory, overwriting this value each time it increases. It's not a good solution but it will provide
 // more accurate values for the life %. This value is checked for each memory iteration.
-var maxLife = 0
-var maxLifeBO = 0
-var maxMana = 0
-var maxManaBO = 0
 
 const (
 	goldPerLevel = 10000
@@ -44,7 +40,17 @@ type Data struct {
 	Roster         Roster
 	HoverData      HoverData
 	TerrorZones    []area.Area
+	Params_        Params
 }
+
+type Params struct {
+	MaxLife   int `default:"0"`
+	MaxLifeBO int `default:"0"`
+	MaxMana   int `default:"0"`
+	MaxManaBO int `default:"0"`
+}
+
+var Params_ Params
 
 type Room struct {
 	Position
@@ -164,23 +170,25 @@ func (pu PlayerUnit) HPPercent() int {
 		return 100
 	}
 
-	if maxLifeBO == 0 && maxLife == 0 {
-		maxLife = pu.Stats[stat.MaxLife]
-		maxLifeBO = pu.Stats[stat.MaxLife]
+	if Params_.MaxLifeBO == 0 && Params_.MaxLife == 0 {
+		Params_.MaxLife = pu.Stats[stat.Life]
+		Params_.MaxLifeBO = pu.Stats[stat.Life]
 	}
 
 	if pu.States.HasState(state.Battleorders) {
-		if maxLifeBO < pu.Stats[stat.Life] {
-			maxLifeBO = pu.Stats[stat.Life]
+		if Params_.MaxLifeBO < pu.Stats[stat.Life] {
+			Params_.MaxLifeBO = pu.Stats[stat.Life]
 		}
-		return int((float64(pu.Stats[stat.Life]) / float64(maxLifeBO)) * 100)
+		return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLifeBO)) * 100)
+	}
+	if !pu.States.HasState(state.Battleorders) {
+		if Params_.MaxLife < pu.Stats[stat.Life] {
+			Params_.MaxLife = pu.Stats[stat.Life]
+		}
+		return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLife)) * 100)
 	}
 
-	if maxLife < pu.Stats[stat.Life] {
-		maxLife = pu.Stats[stat.Life]
-	}
-
-	return int((float64(pu.Stats[stat.Life]) / float64(maxLife)) * 100)
+	return int((float64(pu.Stats[stat.Life]) / float64(pu.Stats[stat.Life])) * 100)
 }
 
 func (pu PlayerUnit) MPPercent() int {
@@ -189,23 +197,25 @@ func (pu PlayerUnit) MPPercent() int {
 		return 100
 	}
 
-	if maxManaBO == 0 && maxMana == 0 {
-		maxMana = pu.Stats[stat.MaxMana]
-		maxManaBO = pu.Stats[stat.MaxMana]
+	if Params_.MaxManaBO == 0 && Params_.MaxMana == 0 {
+		Params_.MaxMana = pu.Stats[stat.Mana]
+		Params_.MaxManaBO = pu.Stats[stat.Mana]
 	}
 
 	if pu.States.HasState(state.Battleorders) {
-		if maxManaBO < pu.Stats[stat.Mana] {
-			maxManaBO = pu.Stats[stat.Mana]
+		if Params_.MaxManaBO < pu.Stats[stat.Mana] {
+			Params_.MaxManaBO = pu.Stats[stat.Mana]
 		}
-		return int((float64(pu.Stats[stat.Mana]) / float64(maxManaBO)) * 100)
+		return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxManaBO)) * 100)
+	}
+	if !pu.States.HasState(state.Battleorders) {
+		if Params_.MaxMana < pu.Stats[stat.Mana] {
+			Params_.MaxMana = pu.Stats[stat.Mana]
+		}
+		return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxMana)) * 100)
 	}
 
-	if maxMana < pu.Stats[stat.Mana] {
-		maxMana = pu.Stats[stat.Mana]
-	}
-
-	return int((float64(pu.Stats[stat.Mana]) / float64(maxMana)) * 100)
+	return int((float64(pu.Stats[stat.Mana]) / float64(pu.Stats[stat.MaxMana])) * 100)
 }
 
 func (pu PlayerUnit) HasDebuff() bool {
