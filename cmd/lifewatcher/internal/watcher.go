@@ -54,7 +54,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			d := w.gr.GetData()
 
-			log.Printf("%s: Life: %s", time.Now().Format(time.RFC3339), d.PlayerUnit.Life.ToString())
+			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), d.PlayerUnit.HPPercent(), d.PlayerUnit.MPPercent())
 
 			speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 		}

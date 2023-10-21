@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/signal"
 
+	lifewatcher "github.com/hectorgimenez/d2go/cmd/lifewatcher/internal"
 	"github.com/hectorgimenez/d2go/pkg/memory"
 	"github.com/hectorgimenez/d2go/pkg/nip"
-	lifewatcher "github.com/hefero/d2go/cmd/lifewatcher/internal"
 )
 
 func main() {
