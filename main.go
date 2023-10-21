@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/lifewatcher"
@@ -12,14 +13,19 @@ import (
 )
 
 func main() {
-	process, err := memory.NewProcess()
-	if err != nil {
-		log.Fatalf("error starting process: player needs to be inside a running game %s", err.Error())
-	}
 
 	errL := config.Load()
 	if errL != nil {
 		log.Fatalf("Error loading configuration file config.yaml: %s", errL.Error())
+	}
+
+	process, err := memory.NewProcess()
+	for err != nil {
+		if err != nil {
+			log.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds", err.Error())
+		}
+		time.Sleep(5 * time.Second)
+		process, err = memory.NewProcess()
 	}
 
 	gr := memory.NewGameReader(process)
@@ -28,9 +34,7 @@ func main() {
 
 	ctx := contextWithSigterm(context.Background())
 	err = watcher.Start(ctx)
-	if err != nil {
-		log.Fatalf("error during process: %s", err.Error())
-	}
+
 }
 
 func contextWithSigterm(ctx context.Context) context.Context {

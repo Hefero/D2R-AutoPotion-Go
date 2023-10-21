@@ -1,6 +1,8 @@
 package memory
 
 import (
+	"errors"
+
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 )
@@ -19,7 +21,7 @@ func NewGameReader(process Process) *GameReader {
 
 var previousData *data.Data
 
-func (gd *GameReader) GetData() data.Data {
+func (gd *GameReader) GetData() (data.Data, error) {
 	if gd.offset.UnitTable == 0 {
 		gd.offset = calculateOffsets(gd.Process)
 	}
@@ -43,12 +45,16 @@ func (gd *GameReader) GetData() data.Data {
 	}
 
 	if playerUnitPtr == 0 {
-		return *previousData
+		if previousData == nil {
+			var mockData = data.Data{}
+			return mockData, errors.New("no previous data")
+		}
+		return *previousData, errors.New("error getting game data")
 	}
 
 	previousData = &d
 
-	return d
+	return d, nil
 }
 
 func (gd *GameReader) InGame() bool {
