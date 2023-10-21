@@ -14,12 +14,12 @@ import (
 func main() {
 	process, err := memory.NewProcess()
 	if err != nil {
-		log.Fatalf("error starting process: %s", err.Error())
+		log.Fatalf("error starting process: player needs to be inside a running game %s", err.Error())
 	}
 
 	errL := config.Load()
 	if errL != nil {
-		log.Fatalf("Error loading configuration: %s", errL.Error())
+		log.Fatalf("Error loading configuration file config.yaml: %s", errL.Error())
 	}
 
 	gr := memory.NewGameReader(process)
