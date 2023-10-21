@@ -3,8 +3,11 @@
 ---
 
 Tool for Diablo 2: Resurrected written in Go. 
+<bl />
 Automatically uses HP and Mana Potion
+<bl />
 Parameter configuration on config/config.yaml
+<bl />
 
 [Windows .exe](https://github.com/Hefero/D2R-AutoPotion-Go/releases/download/v1/D2R-AutoPotion-Go.zip) - Binary compiled for Windows
 
