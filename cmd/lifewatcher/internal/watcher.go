@@ -14,6 +14,7 @@ import (
 	"github.com/hectorgimenez/d2go/pkg/data/item"
 	"github.com/hectorgimenez/d2go/pkg/memory"
 	"github.com/hectorgimenez/d2go/pkg/nip"
+	"github.com/micmonay/keybd_event"
 )
 
 type Watcher struct {
@@ -41,6 +42,7 @@ func NewWatcher(gr *memory.GameReader, rules []nip.Rule) *Watcher {
 func (w *Watcher) Start(ctx context.Context) error {
 	w.alreadyNotifiedItemIDs = make([]itemFootprint, 0)
 	audioBuffer, err := initAudio()
+	kb, err := keybd_event.NewKeyBonding()
 	if err != nil {
 		return err
 	}
@@ -54,9 +56,26 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			d := w.gr.GetData()
 
-			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), d.PlayerUnit.HPPercent(), d.PlayerUnit.MPPercent())
+			HPPercent := d.PlayerUnit.HPPercent()
+			MPPercent := d.PlayerUnit.MPPercent()
+			MercHPPercent := d.MercHPPercent()
 
-			speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), HPPercent, MPPercent)
+
+			if HPPercent < 90 {
+				kb.HasSHIFT(false)
+				kb.SetKeys(keybd_event.VK_1)
+				err = kb.Launching()
+				speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+			}
+
+			if MercHPPercent < 70 {
+				kb.SetKeys(keybd_event.VK_1)
+				kb.HasSHIFT(true)
+				err = kb.Launching()
+				kb.HasSHIFT(false)
+				speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+			}
 		}
 	}
 }

@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/micmonay/keybd_event v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/hajimehoshi/oto v0.7.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
