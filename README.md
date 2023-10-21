@@ -22,5 +22,5 @@ Parameter configuration on config/config.yaml
 
 ### Tools
 
-- [cmd/itemwatcher](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/cmd/itemwatcher) - Small tool that plays a sound
+- [cmd/itemwatcher](https://github.com/hectorgimenez/d2go/cmd/itemwatcher) - Small tool that plays a sound
   when an item passing the filtering process is dropped
