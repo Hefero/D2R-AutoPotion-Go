@@ -165,57 +165,72 @@ func (pu PlayerUnit) TotalGold() int {
 }
 
 func (pu PlayerUnit) HPPercent() int {
-	_, found := pu.Stats[stat.MaxLife]
-	if !found {
-		return 100
-	}
 
-	if Params_.MaxLifeBO == 0 && Params_.MaxLife == 0 {
+	if !pu.Area.IsTown() {
+		_, found := pu.Stats[stat.MaxLife]
+		if !found {
+			return 100
+		}
+
+		if Params_.MaxLifeBO == 0 && Params_.MaxLife == 0 {
+			Params_.MaxLife = pu.Stats[stat.Life]
+			Params_.MaxLifeBO = pu.Stats[stat.Life]
+		}
+
+		if pu.States.HasState(state.Battleorders) {
+			if Params_.MaxLifeBO < pu.Stats[stat.Life] {
+				Params_.MaxLifeBO = pu.Stats[stat.Life]
+			}
+			return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLifeBO)) * 100)
+		}
+		if !pu.States.HasState(state.Battleorders) {
+			if Params_.MaxLife < pu.Stats[stat.Life] {
+				Params_.MaxLife = pu.Stats[stat.Life]
+			}
+			return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLife)) * 100)
+		}
+
+		return int((float64(pu.Stats[stat.Life]) / float64(pu.Stats[stat.Life])) * 100)
+	}
+	if pu.Area.IsTown() {
 		Params_.MaxLife = pu.Stats[stat.Life]
 		Params_.MaxLifeBO = pu.Stats[stat.Life]
 	}
-
-	if pu.States.HasState(state.Battleorders) {
-		if Params_.MaxLifeBO < pu.Stats[stat.Life] {
-			Params_.MaxLifeBO = pu.Stats[stat.Life]
-		}
-		return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLifeBO)) * 100)
-	}
-	if !pu.States.HasState(state.Battleorders) {
-		if Params_.MaxLife < pu.Stats[stat.Life] {
-			Params_.MaxLife = pu.Stats[stat.Life]
-		}
-		return int((float64(pu.Stats[stat.Life]) / float64(Params_.MaxLife)) * 100)
-	}
-
-	return int((float64(pu.Stats[stat.Life]) / float64(pu.Stats[stat.Life])) * 100)
+	return 100
 }
 
 func (pu PlayerUnit) MPPercent() int {
-	_, found := pu.Stats[stat.MaxMana]
-	if !found {
-		return 100
-	}
+	if !pu.Area.IsTown() {
+		_, found := pu.Stats[stat.MaxMana]
+		if !found {
+			return 100
+		}
 
-	if Params_.MaxManaBO == 0 && Params_.MaxMana == 0 {
+		if Params_.MaxManaBO == 0 && Params_.MaxMana == 0 {
+			Params_.MaxMana = pu.Stats[stat.Mana]
+			Params_.MaxManaBO = pu.Stats[stat.Mana]
+		}
+
+		if pu.States.HasState(state.Battleorders) {
+			if Params_.MaxManaBO < pu.Stats[stat.Mana] {
+				Params_.MaxManaBO = pu.Stats[stat.Mana]
+			}
+			return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxManaBO)) * 100)
+		}
+		if !pu.States.HasState(state.Battleorders) {
+			if Params_.MaxMana < pu.Stats[stat.Mana] {
+				Params_.MaxMana = pu.Stats[stat.Mana]
+			}
+			return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxMana)) * 100)
+		}
+
+		return int((float64(pu.Stats[stat.Mana]) / float64(pu.Stats[stat.MaxMana])) * 100)
+	}
+	if pu.Area.IsTown() {
 		Params_.MaxMana = pu.Stats[stat.Mana]
 		Params_.MaxManaBO = pu.Stats[stat.Mana]
 	}
-
-	if pu.States.HasState(state.Battleorders) {
-		if Params_.MaxManaBO < pu.Stats[stat.Mana] {
-			Params_.MaxManaBO = pu.Stats[stat.Mana]
-		}
-		return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxManaBO)) * 100)
-	}
-	if !pu.States.HasState(state.Battleorders) {
-		if Params_.MaxMana < pu.Stats[stat.Mana] {
-			Params_.MaxMana = pu.Stats[stat.Mana]
-		}
-		return int((float64(pu.Stats[stat.Mana]) / float64(Params_.MaxMana)) * 100)
-	}
-
-	return int((float64(pu.Stats[stat.Mana]) / float64(pu.Stats[stat.MaxMana])) * 100)
+	return 100
 }
 
 func (pu PlayerUnit) HasDebuff() bool {

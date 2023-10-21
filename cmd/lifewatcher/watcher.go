@@ -51,53 +51,56 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
 				//log.Printf("Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
-				log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent())
+				log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown())
 				manager.lastDebugMsg = time.Now()
 			}
 
-			usedRejuv := false
-			if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
-				UseRejuv()
-				usedRejuv := true
-				if usedRejuv {
-					manager.lastRejuv = time.Now()
-				}
-				speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
-			}
+			if !d.PlayerUnit.Area.IsTown() {
 
-			if !usedRejuv {
-
-				if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(config.Config.Timings.HealingInterval)*time.Second) {
-					UseHP()
-					manager.lastHeal = time.Now()
-					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
-				}
-
-				if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
-					UseMana()
-					manager.lastMana = time.Now()
-					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
-				}
-			}
-
-			// Mercenary
-			if d.MercHPPercent() > 0 {
-				usedMercRejuv := false
-				if time.Since(manager.lastRejuvMerc) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
-					UseMercRejuv()
-					usedMercRejuv := true
-					if usedMercRejuv {
-						manager.lastRejuvMerc = time.Now()
+				usedRejuv := false
+				if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
+					UseRejuv()
+					usedRejuv := true
+					if usedRejuv {
+						manager.lastRejuv = time.Now()
 					}
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 				}
 
-				if !usedMercRejuv {
+				if !usedRejuv {
 
-					if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
-						UseHPMerc()
-						manager.lastMercHeal = time.Now()
+					if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(config.Config.Timings.HealingInterval)*time.Second) {
+						UseHP()
+						manager.lastHeal = time.Now()
 						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+					}
+
+					if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
+						UseMana()
+						manager.lastMana = time.Now()
+						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+					}
+				}
+
+				// Mercenary
+				if d.MercHPPercent() > 0 {
+					usedMercRejuv := false
+					if time.Since(manager.lastRejuvMerc) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
+						UseMercRejuv()
+						usedMercRejuv := true
+						if usedMercRejuv {
+							manager.lastRejuvMerc = time.Now()
+						}
+						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+					}
+
+					if !usedMercRejuv {
+
+						if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
+							UseHPMerc()
+							manager.lastMercHeal = time.Now()
+							speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+						}
 					}
 				}
 			}
