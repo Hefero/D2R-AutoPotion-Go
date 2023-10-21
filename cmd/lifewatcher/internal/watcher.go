@@ -56,7 +56,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), HPPercent, MPPercent)
 			usedRejuv := false
-			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 60) {
+			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 40) {
 				UseRejuv()
 				if usedRejuv {
 					manager.lastRejuv = time.Now()
@@ -66,13 +66,13 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			if !usedRejuv {
 
-				if d.PlayerUnit.HPPercent() <= 85 && time.Since(manager.lastHeal) > healingInterval {
+				if d.PlayerUnit.HPPercent() <= 80 && time.Since(manager.lastHeal) > healingInterval {
 					UseHP()
 					manager.lastHeal = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 				}
 
-				if d.PlayerUnit.MPPercent() <= 80 && time.Since(manager.lastMana) > manaInterval {
+				if d.PlayerUnit.MPPercent() <= 70 && time.Since(manager.lastMana) > manaInterval {
 					UseMana()
 					manager.lastMana = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
