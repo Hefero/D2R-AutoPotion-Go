@@ -1,9 +1,9 @@
-<h1 align="center">d2go</h1>
+<h1 align="center">Diablo II Ressurrected Auto Potion</h1>
 
 ---
 
-Tooling for Diablo II: Resurrected written in Go. It provides a library to read game memory and a public SDK to be
-imported, along with data structures and some other tools.
+Tooling for Diablo II: Resurrected written in Go. 
+Automatically uses HP and Mana Potion
 
 ### Libraries
 
