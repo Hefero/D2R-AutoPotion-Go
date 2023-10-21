@@ -36,7 +36,9 @@ func NewWatcher(gr *memory.GameReader) *Watcher {
 
 func (w *Watcher) Start(ctx context.Context) error {
 	var manager = Manager{}
-	audioBuffer, err := initAudio()
+	audioBufferL, err := initAudio("cmd/lifewatcher/assets/life.wav")
+	audioBufferM, err := initAudio("cmd/lifewatcher/assets/mana.wav")
+	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
 
 	if err != nil {
 		return err
@@ -70,7 +72,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 						if usedRejuv {
 							manager.lastRejuv = time.Now()
 						}
-						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+						speaker.Play(audioBufferR.Streamer(0, audioBufferR.Len()))
 					}
 
 					if !usedRejuv {
@@ -78,13 +80,13 @@ func (w *Watcher) Start(ctx context.Context) error {
 						if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(config.Config.Timings.HealingInterval)*time.Second) {
 							UseHP()
 							manager.lastHeal = time.Now()
-							speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+							speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))
 						}
 
 						if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
 							UseMana()
 							manager.lastMana = time.Now()
-							speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+							speaker.Play(audioBufferM.Streamer(0, audioBufferM.Len()))
 						}
 					}
 
@@ -97,7 +99,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 							if usedMercRejuv {
 								manager.lastRejuvMerc = time.Now()
 							}
-							speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+							speaker.Play(audioBufferR.Streamer(0, audioBufferR.Len()))
 						}
 
 						if !usedMercRejuv {
@@ -105,7 +107,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 							if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
 								UseHPMerc()
 								manager.lastMercHeal = time.Now()
-								speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
+								speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))
 							}
 						}
 					}
@@ -116,8 +118,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 	}
 }
 
-func initAudio() (*beep.Buffer, error) {
-	f, err := os.Open("cmd/lifewatcher/assets/ching.wav")
+func initAudio(path string) (*beep.Buffer, error) {
+	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
