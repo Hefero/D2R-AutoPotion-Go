@@ -58,6 +58,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 			usedRejuv := false
 			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 40) {
 				UseRejuv()
+				usedRejuv := true
 				if usedRejuv {
 					manager.lastRejuv = time.Now()
 				}
@@ -84,6 +85,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 				usedMercRejuv := false
 				if time.Since(manager.lastRejuvMerc) > rejuvInterval && d.MercHPPercent() <= 30 {
 					UseMercRejuv()
+					usedMercRejuv := true
 					if usedMercRejuv {
 						manager.lastRejuvMerc = time.Now()
 					}
