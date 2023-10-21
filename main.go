@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	itemwatcher "github.com/hectorgimenez/d2go/cmd/itemwatcher/internal"
-	"github.com/hectorgimenez/d2go/pkg/memory"
-	"github.com/hectorgimenez/d2go/pkg/nip"
 	"log"
 	"os"
 	"os/signal"
+
+	"github.com/hectorgimenez/d2go/cmd/config"
+	"github.com/hectorgimenez/d2go/cmd/lifewatcher"
+	"github.com/hectorgimenez/d2go/pkg/memory"
 )
 
 func main() {
@@ -16,14 +17,14 @@ func main() {
 		log.Fatalf("error starting process: %s", err.Error())
 	}
 
-	gr := memory.NewGameReader(process)
-
-	rules, err := nip.ReadDir("config/itemfilter/")
-	if err != nil {
-		log.Fatalf("error reading NIP files: %s", err.Error())
+	errL := config.Load()
+	if errL != nil {
+		log.Fatalf("Error loading configuration: %s", errL.Error())
 	}
 
-	watcher := itemwatcher.NewWatcher(gr, rules)
+	gr := memory.NewGameReader(process)
+
+	watcher := lifewatcher.NewWatcher(gr)
 
 	ctx := contextWithSigterm(context.Background())
 	err = watcher.Start(ctx)

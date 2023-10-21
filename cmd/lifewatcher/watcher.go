@@ -9,6 +9,7 @@ import (
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
 	"github.com/faiface/beep/wav"
+	"github.com/hectorgimenez/d2go/cmd/config"
 	"github.com/hectorgimenez/d2go/pkg/memory"
 	"github.com/micmonay/keybd_event"
 )
@@ -56,7 +57,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			log.Printf("%s: Life: %d Mana: %d", time.Now().Format(time.RFC3339), HPPercent, MPPercent)
 			usedRejuv := false
-			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= 40 || d.PlayerUnit.MPPercent() < 40) {
+			if time.Since(manager.lastRejuv) > rejuvInterval && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
 				UseRejuv()
 				usedRejuv := true
 				if usedRejuv {
@@ -67,13 +68,13 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 			if !usedRejuv {
 
-				if d.PlayerUnit.HPPercent() <= 80 && time.Since(manager.lastHeal) > healingInterval {
+				if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > healingInterval {
 					UseHP()
 					manager.lastHeal = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
 				}
 
-				if d.PlayerUnit.MPPercent() <= 70 && time.Since(manager.lastMana) > manaInterval {
+				if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > manaInterval {
 					UseMana()
 					manager.lastMana = time.Now()
 					speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
@@ -83,7 +84,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 			// Mercenary
 			if d.MercHPPercent() > 0 {
 				usedMercRejuv := false
-				if time.Since(manager.lastRejuvMerc) > rejuvInterval && d.MercHPPercent() <= 30 {
+				if time.Since(manager.lastRejuvMerc) > rejuvInterval && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
 					UseMercRejuv()
 					usedMercRejuv := true
 					if usedMercRejuv {
@@ -94,7 +95,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 				if !usedMercRejuv {
 
-					if d.MercHPPercent() <= 60 && time.Since(manager.lastMercHeal) > healingMercInterval {
+					if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > healingMercInterval {
 						UseHPMerc()
 						manager.lastMercHeal = time.Now()
 						speaker.Play(audioBuffer.Streamer(0, audioBuffer.Len()))
@@ -107,7 +108,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 }
 
 func initAudio() (*beep.Buffer, error) {
-	f, err := os.Open("assets/ching.wav")
+	f, err := os.Open("cmd/lifewatcher/assets/ching.wav")
 	if err != nil {
 		return nil, err
 	}

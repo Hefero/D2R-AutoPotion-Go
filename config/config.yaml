@@ -1,0 +1,7 @@
+health: # Healing configuration, all values in %
+  healingPotionAt: 80
+  manaPotionAt: 60
+  rejuvPotionAtLife: 40
+  rejuvPotionAtMana: 40
+  mercHealingPotionAt: 60
+  mercRejuvPotionAt: 20
