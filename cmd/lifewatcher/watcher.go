@@ -29,7 +29,7 @@ const (
 	healingInterval     = time.Second * 4
 	healingMercInterval = time.Second * 6
 	manaInterval        = time.Second * 5
-	rejuvInterval       = time.Second * 2
+	rejuvInterval       = time.Second * 1
 )
 
 func NewWatcher(gr *memory.GameReader) *Watcher {
