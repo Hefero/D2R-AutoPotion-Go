@@ -16,9 +16,6 @@ Parameter configuration on config/config.yaml
 - [data](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/pkg/data) - D2R Game data structures
 - [memory](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/pkg/memory) - D2R memory reader (it provides the data
   structures)
-- [nip](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/pkg/nip) - A very basic NIP file parser
-- [itemfilter](https://github.com/Hefero/D2R-AutoPotion-Go/tree/main/pkg/itemfilter) - Based on game data, it provides an item
-  pickup filtering
 
 ### Tools
 
