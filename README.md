@@ -25,6 +25,7 @@ $ go run main.go
 ```
 - Or compile and execute main.exe:
 ```ruby
+$ cd D2R-AutoPotion-Go
 $ go build main.go
 $ main.exe
 ```
