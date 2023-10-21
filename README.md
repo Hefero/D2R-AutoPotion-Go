@@ -2,7 +2,7 @@
 
 ---
 
-Tool for Diablo 2: Resurrected written in Go. 
+Tool for Diablo 2: Resurrected written in GoLang. 
 <br />
 Automatically uses HP and Mana Potion
 <br />
