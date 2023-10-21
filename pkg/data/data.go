@@ -14,6 +14,8 @@ import (
 // more accurate values for the life %. This value is checked for each memory iteration.
 var maxLife = 0
 var maxLifeBO = 0
+var maxMana = 0
+var maxManaBO = 0
 
 const (
 	goldPerLevel = 10000
@@ -182,7 +184,28 @@ func (pu PlayerUnit) HPPercent() int {
 }
 
 func (pu PlayerUnit) MPPercent() int {
-	return int((float64(pu.Stats[stat.Mana]) / float64(pu.Stats[stat.MaxMana])) * 100)
+	_, found := pu.Stats[stat.MaxMana]
+	if !found {
+		return 100
+	}
+
+	if maxLifeBO == 0 && maxLife == 0 {
+		maxMana = pu.Stats[stat.MaxMana]
+		maxManaBO = pu.Stats[stat.MaxMana]
+	}
+
+	if pu.States.HasState(state.Battleorders) {
+		if maxManaBO < pu.Stats[stat.Mana] {
+			maxManaBO = pu.Stats[stat.Mana]
+		}
+		return int((float64(pu.Stats[stat.Mana]) / float64(maxLifeBO)) * 100)
+	}
+
+	if maxMana < pu.Stats[stat.Mana] {
+		maxMana = pu.Stats[stat.Mana]
+	}
+
+	return int((float64(pu.Stats[stat.Mana]) / float64(maxMana)) * 100)
 }
 
 func (pu PlayerUnit) HasDebuff() bool {
