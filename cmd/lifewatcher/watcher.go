@@ -41,8 +41,19 @@ func (w *Watcher) Start(ctx context.Context) error {
 	audioBufferM, err := initAudio("cmd/lifewatcher/assets/mana.wav")
 	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
 
+	XP := [10]int{}
+
+	XPbefore := 0
+
+	timer := time.Now()
+	var first30s = true
+
+	d, err := w.gr.GetData()
 	if err != nil {
-		return err
+		fmt.Printf("\r                                              ") //clean line
+		fmt.Printf("\rnot In Game\n")
+		fmt.Print("\033[A")
+		time.Sleep(1 * time.Second)
 	}
 
 	for {
@@ -50,20 +61,50 @@ func (w *Watcher) Start(ctx context.Context) error {
 		case <-ctx.Done():
 			return nil
 		default:
-			d, err := w.gr.GetData()
+			d, err = w.gr.GetData()
 			if err != nil {
-				fmt.Printf("not In Game\n")
+				fmt.Printf("\r                        ") //clean line
+				fmt.Printf("\rnot In Game\n")
 				fmt.Print("\033[A")
 				time.Sleep(1 * time.Second)
 			}
 
 			if err == nil {
-
 				if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
-					//log.Printf("Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
-					fmt.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d experience:%d\n", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown(), d.PlayerUnit.Stats[stat.Experience])
-					fmt.Print("\033[A")
+					if XPbefore == 0 {
+						XPbefore = d.PlayerUnit.Stats[stat.Experience]
+					}
+					fmt.Printf("\r%2.0f PercentLife:%*d PercentMana:%*d", time.Since(timer).Seconds(), 3, d.PlayerUnit.HPPercent(), 3, d.PlayerUnit.MPPercent())
 					manager.lastDebugMsg = time.Now()
+
+					if time.Since(timer) > (time.Second * 30) {
+						timer = time.Now()
+						if first30s {
+							if XPbefore == 0 {
+								XPbefore = d.PlayerUnit.Stats[stat.Experience]
+							}
+							for i := 0; i < len(XP); i++ {
+								XP[i] = d.PlayerUnit.Stats[stat.Experience] - XPbefore
+							}
+							first30s = false
+						}
+						newArray := XP[1:]
+						newArray = append([]int{d.PlayerUnit.Stats[stat.Experience] - XPbefore}, newArray...)
+						XPbefore = d.PlayerUnit.Stats[stat.Experience]
+
+						var XParray = [9]int{}
+
+						for i := 0; i < len(XParray); i++ {
+							XParray[i] = 0
+							for j := 0; j < i; j++ {
+								XParray[i] += newArray[j] / i
+							}
+							if (i % 2) > 0 {
+								fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*2)
+							}
+						}
+					}
+					fmt.Print("\n\033[A")
 				}
 
 				if !d.PlayerUnit.Area.IsTown() {
