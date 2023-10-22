@@ -41,10 +41,11 @@ func (w *Watcher) Start(ctx context.Context) error {
 	audioBufferM, err := initAudio("cmd/lifewatcher/assets/mana.wav")
 	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
 
-	XP := [10]int{}
-	XP_aux := [10]int{}
-	XParray := [10]float32{}
+	XP := [20]int{}
+	XP_aux := [20]int{}
+	XParray := [20]float32{}
 	XPbefore := 0
+	indexUpdated := 0
 
 	timer := time.Now()
 	var first30s = true
@@ -91,7 +92,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 						}
 						diff := d.PlayerUnit.Stats[stat.Experience] - XPbefore
 
-						XP_aux = [10]int{diff, XP[0], XP[1], XP[2], XP[3], XP[4], XP[5], XP[6], XP[7], XP[8]}
+						XP_aux = [20]int{diff, XP[0], XP[1], XP[2], XP[3], XP[4], XP[5], XP[6], XP[7], XP[8], XP[9], XP[10], XP[11], XP[12], XP[13], XP[14], XP[15], XP[16], XP[17], XP[18]}
 						XP = XP_aux
 
 						for i := 0; i < len(XParray); i++ {
@@ -99,14 +100,17 @@ func (w *Watcher) Start(ctx context.Context) error {
 							for j := 0; j < i; j++ {
 								XParray[i] += float32((XP[j] / i)) / 100000
 							}
-							if (i % 2) > 0 {
+							if (i%2) > 0 && i < 7 {
 								fmt.Printf(" xp_%d:%3.2fM", i, XParray[i]*4)
 							}
 						}
 						XPbefore = d.PlayerUnit.Stats[stat.Experience]
 						XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XPbefore
-						hours := float32(XPneeded) / (XParray[9] * 4 * 100000 * 60)
+						hours := float32(XPneeded) / (XParray[indexUpdated] * 4 * 100000 * 60)
 						fmt.Printf(" tnl:%2.2f H", hours)
+						if indexUpdated < 20 {
+							indexUpdated++
+						}
 					}
 					fmt.Print("\n\033[A")
 				}
