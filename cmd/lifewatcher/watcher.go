@@ -108,7 +108,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 						XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XPbefore
 						hours := float32(XPneeded) / (XParray[indexUpdated] * 4 * 100000 * 60)
 						fmt.Printf(" tnl:%2.2f H", hours)
-						if indexUpdated < 20 {
+						if indexUpdated < 19 {
 							indexUpdated++
 						}
 					}
