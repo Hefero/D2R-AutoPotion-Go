@@ -9,6 +9,7 @@ import (
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
+	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/state"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
@@ -65,6 +66,12 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 				if !d.PlayerUnit.Area.IsTown() {
 
+					var healingInterval float32 = config.Config.Timings.HealingInterval
+
+					if d.PlayerUnit.States.HasState(state.Poison) {
+						healingInterval += 2
+					}
+
 					usedRejuv := false
 					if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
 						UseRejuv()
@@ -77,7 +84,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 					if !usedRejuv {
 
-						if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(config.Config.Timings.HealingInterval)*time.Second) {
+						if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(healingInterval)*time.Second) {
 							UseHP()
 							manager.lastHeal = time.Now()
 							speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))

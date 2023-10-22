@@ -26,10 +26,10 @@ type StructConfig struct {
 		PotionREJUV int `yaml:"potionREJUV"`
 	} `yaml:"bindings"`
 	Timings struct {
-		RejuvInterval       int `yaml:"rejuvInterval"`
-		HealingInterval     int `yaml:"healingInterval"`
-		ManaInterval        int `yaml:"manaInterval"`
-		HealingMercInterval int `yaml:"healingMercInterval"`
+		RejuvInterval       float32 `yaml:"rejuvInterval"`
+		HealingInterval     float32 `yaml:"healingInterval"`
+		ManaInterval        float32 `yaml:"manaInterval"`
+		HealingMercInterval float32 `yaml:"healingMercInterval"`
 	} `yaml:"timings"`
 }
 
