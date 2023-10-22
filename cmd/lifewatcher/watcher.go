@@ -99,9 +99,9 @@ func (w *Watcher) Start(ctx context.Context) error {
 							for j := 0; j < i; j++ {
 								XParray[i] += XP[j] / i
 							}
-							//if (i % 1) > 0 {
-							fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*4)
-							//}
+							if (i % 2) > 0 {
+								fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*4)
+							}
 						}
 						XPbefore = d.PlayerUnit.Stats[stat.Experience]
 					}
