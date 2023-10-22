@@ -2,7 +2,7 @@ package lifewatcher
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"os"
 	"time"
 
@@ -52,7 +52,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 		default:
 			d, err := w.gr.GetData()
 			if err != nil {
-				log.Printf("not In Game")
+				fmt.Printf("not In Game\n")
+				fmt.Print("\033[A")
 				time.Sleep(1 * time.Second)
 			}
 
@@ -60,7 +61,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 				if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
 					//log.Printf("Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
-					log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d experience:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown(), d.PlayerUnit.Stats[stat.Experience])
+					fmt.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d experience:%d\n", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown(), d.PlayerUnit.Stats[stat.Experience])
+					fmt.Print("\033[A")
 					manager.lastDebugMsg = time.Now()
 				}
 

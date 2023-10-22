@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -22,7 +23,8 @@ func main() {
 	process, err := memory.NewProcess()
 	for err != nil {
 		if err != nil {
-			log.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds", err.Error())
+			fmt.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds\n", err.Error())
+			fmt.Print("\033[A")
 		}
 		time.Sleep(5 * time.Second)
 		process, err = memory.NewProcess()
