@@ -103,6 +103,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 							if (i%2) > 0 && i < 7 {
 								fmt.Printf(" xp_%d:%3.2fM", i, XParray[i]*4)
 							}
+							fmt.Printf(" xp_%d:%3.2fM", indexUpdated, XParray[indexUpdated]*4)
+
 						}
 						XPbefore = d.PlayerUnit.Stats[stat.Experience]
 						XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XPbefore
