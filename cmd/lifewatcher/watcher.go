@@ -43,7 +43,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 	XP := [10]int{}
 	XP_aux := [10]int{}
-	XParray := [10]int{}
+	XParray := [10]float32{}
 	XPbefore := 0
 
 	timer := time.Now()
@@ -97,13 +97,16 @@ func (w *Watcher) Start(ctx context.Context) error {
 						for i := 0; i < len(XParray); i++ {
 							XParray[i] = 0
 							for j := 0; j < i; j++ {
-								XParray[i] += XP[j] / i
+								XParray[i] += float32((XP[j] / i)) / 100000
 							}
 							if (i % 2) > 0 {
-								fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*4)
+								fmt.Printf(" xp_%d:%3.2fM", i, XParray[i]*4)
 							}
 						}
 						XPbefore = d.PlayerUnit.Stats[stat.Experience]
+						XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XPbefore
+						hours := float32(XPneeded) / (XParray[9] * 4 * 100000 * 60)
+						fmt.Printf(" tnl:%2.2f H", hours)
 					}
 					fmt.Print("\n\033[A")
 				}
