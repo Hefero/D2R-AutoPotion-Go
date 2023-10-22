@@ -42,7 +42,8 @@ func (w *Watcher) Start(ctx context.Context) error {
 	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
 
 	XP := [10]int{}
-
+	XP_aux := [10]int{}
+	XParray := [10]int{}
 	XPbefore := 0
 
 	timer := time.Now()
@@ -55,6 +56,9 @@ func (w *Watcher) Start(ctx context.Context) error {
 		fmt.Print("\033[A")
 		time.Sleep(1 * time.Second)
 	}
+	if err == nil {
+		XPbefore = d.PlayerUnit.Stats[stat.Experience]
+	}
 
 	for {
 		select {
@@ -63,7 +67,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 		default:
 			d, err = w.gr.GetData()
 			if err != nil {
-				fmt.Printf("\r                        ") //clean line
+				fmt.Printf("\r                                  ") //clean line
 				fmt.Printf("\rnot In Game\n")
 				fmt.Print("\033[A")
 				time.Sleep(1 * time.Second)
@@ -77,32 +81,29 @@ func (w *Watcher) Start(ctx context.Context) error {
 					fmt.Printf("\r%2.0f PercentLife:%*d PercentMana:%*d", time.Since(timer).Seconds(), 3, d.PlayerUnit.HPPercent(), 3, d.PlayerUnit.MPPercent())
 					manager.lastDebugMsg = time.Now()
 
-					if time.Since(timer) > (time.Second * 30) {
+					if time.Since(timer) > (time.Second * 15) {
 						timer = time.Now()
 						if first30s {
-							if XPbefore == 0 {
-								XPbefore = d.PlayerUnit.Stats[stat.Experience]
-							}
 							for i := 0; i < len(XP); i++ {
 								XP[i] = d.PlayerUnit.Stats[stat.Experience] - XPbefore
 							}
 							first30s = false
 						}
-						newArray := XP[1:]
-						newArray = append([]int{d.PlayerUnit.Stats[stat.Experience] - XPbefore}, newArray...)
-						XPbefore = d.PlayerUnit.Stats[stat.Experience]
+						diff := d.PlayerUnit.Stats[stat.Experience] - XPbefore
 
-						var XParray = [9]int{}
+						XP_aux = [10]int{diff, XP[0], XP[1], XP[2], XP[3], XP[4], XP[5], XP[6], XP[7], XP[8]}
+						XP = XP_aux
 
 						for i := 0; i < len(XParray); i++ {
 							XParray[i] = 0
 							for j := 0; j < i; j++ {
-								XParray[i] += newArray[j] / i
+								XParray[i] += XP[j] / i
 							}
-							if (i % 2) > 0 {
-								fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*2)
-							}
+							//if (i % 1) > 0 {
+							fmt.Printf(" xp_%d:%*d", i, 8, XParray[i]*4)
+							//}
 						}
+						XPbefore = d.PlayerUnit.Stats[stat.Experience]
 					}
 					fmt.Print("\n\033[A")
 				}
