@@ -59,7 +59,7 @@ func (w *Watcher) Start(ctx context.Context) error {
 
 				if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
 					//log.Printf("Life:%d MaxLife:%d PercentLife:%d maxLife:%d maxLifeBO:%d Mana:%d MaxMana:%d PercentMana:%d maxMana:%d maxManaBO:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.Params_.MaxLife, d.Params_.MaxLifeBO, d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.Params_.MaxMana, d.Params_.MaxManaBO)
-					log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown())
+					log.Printf("Life:%d MaxLife:%d PercentLife:%d Mana:%d MaxMana:%d PercentMana:%d Town:%d experience:%d", d.PlayerUnit.Stats[stat.Life], d.PlayerUnit.Stats[stat.MaxLife], d.PlayerUnit.HPPercent(), d.PlayerUnit.Stats[stat.Mana], d.PlayerUnit.Stats[stat.MaxMana], d.PlayerUnit.MPPercent(), d.PlayerUnit.Area.IsTown(), d.PlayerUnit.Stats[stat.Experience])
 					manager.lastDebugMsg = time.Now()
 				}
 
@@ -184,7 +184,7 @@ func UseMercRejuv() {
 	if err != nil {
 	}
 	kb.HasSHIFT(true)
-	kb.SetKeys(keybd_event.VK_2)
+	kb.SetKeys(getKey(config.Config.Bindings.PotionREJUV))
 	err = kb.Launching()
 	kb.HasSHIFT(false)
 }
@@ -194,6 +194,6 @@ func UseRejuv() {
 	if err != nil {
 	}
 	kb.HasSHIFT(false)
-	kb.SetKeys(keybd_event.VK_2)
+	kb.SetKeys(getKey(config.Config.Bindings.PotionREJUV))
 	err = kb.Launching()
 }
