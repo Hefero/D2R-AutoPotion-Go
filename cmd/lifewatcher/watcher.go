@@ -3,7 +3,9 @@ package lifewatcher
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
@@ -116,8 +118,19 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 					}
 					XP.Minutes = float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000))
 					XP.Hours = float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000 * 60))
-					hours := float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000 * 60))
-					fmt.Printf(" tnl:%2.2f H", hours)
+
+					f, err := os.Create("data.txt")
+					if err != nil {
+						log.Fatal(err)
+					}
+					defer f.Close()
+					_, err2 := f.WriteString(strconv.FormatFloat(XP.Hours, 'f', -1, 64))
+
+					if err2 != nil {
+						log.Fatal(err2)
+					}
+
+					fmt.Printf(" tnl:%2.2f H", XP.Hours)
 					if XP.IndexUpdated < 19 {
 						XP.IndexUpdated++
 					}

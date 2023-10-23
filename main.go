@@ -55,7 +55,6 @@ func main() {
 		}),
 	))
 	go func() {
-
 		for {
 			watcher, err = StartWatcher(*watcher, ctx, &manager, &XP)
 			//if err != nil {
@@ -64,7 +63,7 @@ func main() {
 			if err == nil {
 				if !XP.FirstStart {
 					//duration.Round(time.Second).String()
-					var textLabel = strconv.FormatFloat(XP.Hours, 'E', -1, 32) + ":" + strconv.FormatFloat(XP.Minutes, 'E', -1, 32) + "h"
+					var textLabel = strconv.FormatFloat(XP.Hours, 'f', 2, 64)
 					updateLabel(hello, textLabel)
 				}
 				//updateLabel(hello, "test")
@@ -77,8 +76,7 @@ func main() {
 }
 
 func updateLabel(label *widget.Label, text string) {
-	formatted := time.Now().Format(text)
-	label.SetText(formatted)
+	label.SetText(text)
 }
 
 func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc) (*lifewatcher.Watcher, error) {
