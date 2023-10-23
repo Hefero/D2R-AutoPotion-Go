@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
-	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/stat"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/data/state"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
@@ -18,8 +17,7 @@ import (
 )
 
 type Watcher struct {
-	gr *memory.GameReader
-	pr *data.Params
+	Gr *memory.GameReader
 }
 
 type Manager struct {
@@ -29,28 +27,31 @@ type Manager struct {
 	lastMana      time.Time
 	lastMercHeal  time.Time
 	lastDebugMsg  time.Time
+	Timer         time.Time
+}
+
+type ExperienceCalc struct {
+	XP           [20]int
+	XP_aux       [20]int
+	XParray      [20]float32
+	XPbefore     int     `default:"0"`
+	IndexUpdated int     `default:"0"`
+	first30s     bool    `default:"true"`
+	FirstStart   bool    `default:"true"`
+	Minutes      float64 `default:"0"`
+	Hours        float64 `default:"0"`
 }
 
 func NewWatcher(gr *memory.GameReader) *Watcher {
-	return &Watcher{gr: gr}
+	return &Watcher{Gr: gr}
 }
 
-func (w *Watcher) Start(ctx context.Context) error {
-	var manager = Manager{}
+func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCalc) error {
 	audioBufferL, err := initAudio("cmd/lifewatcher/assets/life.wav")
 	audioBufferM, err := initAudio("cmd/lifewatcher/assets/mana.wav")
 	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
 
-	XP := [20]int{}
-	XP_aux := [20]int{}
-	XParray := [20]float32{}
-	XPbefore := 0
-	indexUpdated := 0
-
-	timer := time.Now()
-	var first30s = true
-
-	d, err := w.gr.GetData()
+	d, err := w.Gr.GetData()
 	if err != nil {
 		fmt.Printf("\r                                              ") //clean line
 		fmt.Printf("\rnot In Game\n")
@@ -58,124 +59,131 @@ func (w *Watcher) Start(ctx context.Context) error {
 		time.Sleep(1 * time.Second)
 	}
 	if err == nil {
-		XPbefore = d.PlayerUnit.Stats[stat.Experience]
+		if XP.FirstStart {
+			XP.XPbefore = d.PlayerUnit.Stats[stat.Experience]
+			XP.FirstStart = false
+		}
 	}
 
-	for {
-		select {
-		case <-ctx.Done():
-			return nil
-		default:
-			d, err = w.gr.GetData()
-			if err != nil {
-				fmt.Printf("\r                                  ") //clean line
-				fmt.Printf("\rnot In Game\n")
-				fmt.Print("\033[A")
-				time.Sleep(1 * time.Second)
+	select {
+	case <-ctx.Done():
+		return nil
+	default:
+		d, err = w.Gr.GetData()
+		if err != nil {
+			fmt.Printf("\r                                  ") //clean line
+			fmt.Printf("\rnot In Game\n")
+			fmt.Print("\033[A")
+			time.Sleep(1 * time.Second)
+		}
+
+		if err == nil {
+			if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
+				if XP.XPbefore == 0 {
+					XP.XPbefore = d.PlayerUnit.Stats[stat.Experience]
+				}
+				fmt.Printf("\r%2.0f PercentLife:%*d PercentMana:%*d", time.Since(manager.Timer).Seconds(), 3, d.PlayerUnit.HPPercent(), 3, d.PlayerUnit.MPPercent())
+				manager.lastDebugMsg = time.Now()
+
+				if time.Since(manager.Timer) > (time.Second * 15) {
+					manager.Timer = time.Now()
+					if XP.first30s {
+						for i := 0; i < len(XP.XP); i++ {
+							XP.XP[i] = d.PlayerUnit.Stats[stat.Experience] - XP.XPbefore
+						}
+						XP.first30s = false
+					}
+					diff := d.PlayerUnit.Stats[stat.Experience] - XP.XPbefore
+
+					XP.XP_aux = [20]int{diff, XP.XP[0], XP.XP[1], XP.XP[2], XP.XP[3], XP.XP[4], XP.XP[5], XP.XP[6], XP.XP[7], XP.XP[8], XP.XP[9], XP.XP[10], XP.XP[11], XP.XP[12], XP.XP[13], XP.XP[14], XP.XP[15], XP.XP[16], XP.XP[17], XP.XP[18]}
+					XP.XP = XP.XP_aux
+
+					for i := 0; i < len(XP.XParray); i++ {
+						XP.XParray[i] = 0
+						for j := 0; j < i; j++ {
+							XP.XParray[i] += float32((XP.XP[j] / i)) / 100000
+						}
+						if (i%2) > 0 && i < 7 {
+							fmt.Printf(" xp_%d:%3.2fM", i, XP.XParray[i]*4)
+						}
+					}
+					fmt.Printf(" xp_%d:%3.2fM", XP.IndexUpdated, XP.XParray[XP.IndexUpdated]*4)
+					XP.XPbefore = d.PlayerUnit.Stats[stat.Experience]
+					XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XP.XPbefore
+					XPfactor := XP.XParray[XP.IndexUpdated]
+					if XPfactor == 0 {
+						XPfactor = 1
+					}
+					XP.Minutes = float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000))
+					XP.Hours = float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000 * 60))
+					hours := float64(XPneeded) / float64((XP.XParray[XP.IndexUpdated] * 4 * 100000 * 60))
+					fmt.Printf(" tnl:%2.2f H", hours)
+					if XP.IndexUpdated < 19 {
+						XP.IndexUpdated++
+					}
+				}
+				fmt.Print("\n\033[A")
 			}
 
-			if err == nil {
-				if time.Since(manager.lastDebugMsg) > (time.Second * 2) {
-					if XPbefore == 0 {
-						XPbefore = d.PlayerUnit.Stats[stat.Experience]
-					}
-					fmt.Printf("\r%2.0f PercentLife:%*d PercentMana:%*d", time.Since(timer).Seconds(), 3, d.PlayerUnit.HPPercent(), 3, d.PlayerUnit.MPPercent())
-					manager.lastDebugMsg = time.Now()
+			if !d.PlayerUnit.Area.IsTown() {
 
-					if time.Since(timer) > (time.Second * 15) {
-						timer = time.Now()
-						if first30s {
-							for i := 0; i < len(XP); i++ {
-								XP[i] = d.PlayerUnit.Stats[stat.Experience] - XPbefore
-							}
-							first30s = false
-						}
-						diff := d.PlayerUnit.Stats[stat.Experience] - XPbefore
+				var healingInterval float32 = config.Config.Timings.HealingInterval
 
-						XP_aux = [20]int{diff, XP[0], XP[1], XP[2], XP[3], XP[4], XP[5], XP[6], XP[7], XP[8], XP[9], XP[10], XP[11], XP[12], XP[13], XP[14], XP[15], XP[16], XP[17], XP[18]}
-						XP = XP_aux
-
-						for i := 0; i < len(XParray); i++ {
-							XParray[i] = 0
-							for j := 0; j < i; j++ {
-								XParray[i] += float32((XP[j] / i)) / 100000
-							}
-							if (i%2) > 0 && i < 7 {
-								fmt.Printf(" xp_%d:%3.2fM", i, XParray[i]*4)
-							}
-							fmt.Printf(" xp_%d:%3.2fM", indexUpdated, XParray[indexUpdated]*4)
-
-						}
-						XPbefore = d.PlayerUnit.Stats[stat.Experience]
-						XPneeded := levelXP(d.PlayerUnit.Stats[stat.Level]+1) - XPbefore
-						hours := float32(XPneeded) / (XParray[indexUpdated] * 4 * 100000 * 60)
-						fmt.Printf(" tnl:%2.2f H", hours)
-						if indexUpdated < 19 {
-							indexUpdated++
-						}
-					}
-					fmt.Print("\n\033[A")
+				if d.PlayerUnit.States.HasState(state.Poison) {
+					healingInterval += 2
 				}
 
-				if !d.PlayerUnit.Area.IsTown() {
+				usedRejuv := false
+				if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
+					UseRejuv()
+					usedRejuv := true
+					if usedRejuv {
+						manager.lastRejuv = time.Now()
+					}
+					speaker.Play(audioBufferR.Streamer(0, audioBufferR.Len()))
+				}
 
-					var healingInterval float32 = config.Config.Timings.HealingInterval
+				if !usedRejuv {
 
-					if d.PlayerUnit.States.HasState(state.Poison) {
-						healingInterval += 2
+					if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(healingInterval)*time.Second) {
+						UseHP()
+						manager.lastHeal = time.Now()
+						speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))
 					}
 
-					usedRejuv := false
-					if time.Since(manager.lastRejuv) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && (d.PlayerUnit.HPPercent() <= config.Config.Health.RejuvPotionAtLife || d.PlayerUnit.MPPercent() < config.Config.Health.RejuvPotionAtMana) {
-						UseRejuv()
-						usedRejuv := true
-						if usedRejuv {
-							manager.lastRejuv = time.Now()
+					if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
+						UseMana()
+						manager.lastMana = time.Now()
+						speaker.Play(audioBufferM.Streamer(0, audioBufferM.Len()))
+					}
+				}
+
+				// Mercenary
+				if d.MercHPPercent() > 0 {
+					usedMercRejuv := false
+					if time.Since(manager.lastRejuvMerc) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
+						UseMercRejuv()
+						usedMercRejuv := true
+						if usedMercRejuv {
+							manager.lastRejuvMerc = time.Now()
 						}
 						speaker.Play(audioBufferR.Streamer(0, audioBufferR.Len()))
 					}
 
-					if !usedRejuv {
+					if !usedMercRejuv {
 
-						if d.PlayerUnit.HPPercent() <= config.Config.Health.HealingPotionAt && time.Since(manager.lastHeal) > (time.Duration(healingInterval)*time.Second) {
-							UseHP()
-							manager.lastHeal = time.Now()
+						if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
+							UseHPMerc()
+							manager.lastMercHeal = time.Now()
 							speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))
-						}
-
-						if d.PlayerUnit.MPPercent() <= config.Config.Health.ManaPotionAt && time.Since(manager.lastMana) > (time.Duration(config.Config.Timings.ManaInterval)*time.Second) {
-							UseMana()
-							manager.lastMana = time.Now()
-							speaker.Play(audioBufferM.Streamer(0, audioBufferM.Len()))
-						}
-					}
-
-					// Mercenary
-					if d.MercHPPercent() > 0 {
-						usedMercRejuv := false
-						if time.Since(manager.lastRejuvMerc) > (time.Duration(config.Config.Timings.RejuvInterval)*time.Second) && d.MercHPPercent() <= config.Config.Health.MercRejuvPotionAt {
-							UseMercRejuv()
-							usedMercRejuv := true
-							if usedMercRejuv {
-								manager.lastRejuvMerc = time.Now()
-							}
-							speaker.Play(audioBufferR.Streamer(0, audioBufferR.Len()))
-						}
-
-						if !usedMercRejuv {
-
-							if d.MercHPPercent() <= config.Config.Health.MercHealingPotionAt && time.Since(manager.lastMercHeal) > (time.Duration(config.Config.Timings.HealingMercInterval)*time.Second) {
-								UseHPMerc()
-								manager.lastMercHeal = time.Now()
-								speaker.Play(audioBufferL.Streamer(0, audioBufferL.Len()))
-							}
 						}
 					}
 				}
 			}
-
 		}
+		return err
 	}
+
 }
 
 func initAudio(path string) (*beep.Buffer, error) {
