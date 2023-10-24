@@ -33,9 +33,9 @@ type Manager struct {
 }
 
 type ExperienceCalc struct {
-	XP           [20]int
-	XP_aux       [20]int
-	XParray      [20]float64
+	XP           [25]int
+	XP_aux       [25]int
+	XParray      [25]float64
 	XPbefore     int     `default:"0"`
 	IndexUpdated int     `default:"0"`
 	first30s     bool    `default:"true"`
@@ -97,7 +97,7 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 					}
 					diff := d.PlayerUnit.Stats[stat.Experience] - XP.XPbefore
 
-					XP.XP_aux = [20]int{diff, XP.XP[0], XP.XP[1], XP.XP[2], XP.XP[3], XP.XP[4], XP.XP[5], XP.XP[6], XP.XP[7], XP.XP[8], XP.XP[9], XP.XP[10], XP.XP[11], XP.XP[12], XP.XP[13], XP.XP[14], XP.XP[15], XP.XP[16], XP.XP[17], XP.XP[18]}
+					XP.XP_aux = [25]int{diff, XP.XP[0], XP.XP[1], XP.XP[2], XP.XP[3], XP.XP[4], XP.XP[5], XP.XP[6], XP.XP[7], XP.XP[8], XP.XP[9], XP.XP[10], XP.XP[11], XP.XP[12], XP.XP[13], XP.XP[14], XP.XP[15], XP.XP[16], XP.XP[17], XP.XP[18], XP.XP[19], XP.XP[20], XP.XP[21], XP.XP[22], XP.XP[23]}
 					XP.XP = XP.XP_aux
 
 					for i := 0; i < len(XP.XParray); i++ {
@@ -126,7 +126,7 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 					defer f.Close()
 					duration := time.Duration(time.Duration(XP.Minutes) * time.Minute).Round(time.Minute).String()
 					durationTrim := duration[:len(duration)-2]
-					stringWrite := durationTrim + " @ " + strconv.FormatFloat(XP.XParray[XP.IndexUpdated], 'f', 2, 64)
+					stringWrite := durationTrim + "  " + strconv.FormatFloat(XP.XParray[XP.IndexUpdated], 'f', 2, 64)
 					_, err2 := f.WriteString(stringWrite)
 
 					if err2 != nil {
