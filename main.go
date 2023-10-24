@@ -53,6 +53,8 @@ func main() {
 
 	ctx := contextWithSigterm(context.Background())
 
+	var cmd *exec.Cmd
+
 	hello := widget.NewLabel("Diablo 2 Ressurrected AutoPotion")
 	w.SetContent(container.NewVBox(
 		hello,
@@ -61,7 +63,7 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
-			cmd := exec.Command(path + "\\gui.exe")
+			cmd = exec.Command(path + "\\gui.exe")
 			if err := cmd.Run(); err != nil {
 				fmt.Println(err)
 			}
@@ -85,6 +87,11 @@ func main() {
 	}()
 
 	w.ShowAndRun()
+
+	defer func() {
+		fmt.Println("\ncleanup")
+		cmd.Process.Kill()
+	}()
 
 }
 
