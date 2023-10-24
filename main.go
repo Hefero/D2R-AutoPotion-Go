@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"os/signal"
-	"strconv"
 	"time"
 
 	"fyne.io/fyne/v2/app"
@@ -20,7 +20,7 @@ import (
 func main() {
 
 	a := app.New()
-	w := a.NewWindow("Hello")
+	w := a.NewWindow("Hefero Diablo 2 Ressurrected AutoPotion")
 
 	var manager = lifewatcher.Manager{}
 	manager.Timer = time.Now()
@@ -48,10 +48,18 @@ func main() {
 
 	ctx := contextWithSigterm(context.Background())
 
-	hello := widget.NewLabel("Hello Fyne!")
+	hello := widget.NewLabel("Diablo 2 Ressurrected AutoPotion")
 	w.SetContent(container.NewVBox(
 		hello,
-		widget.NewButton("Hi!", func() {
+		widget.NewButton("Start", func() {
+			path, err := os.Getwd()
+			if err != nil {
+				log.Println(err)
+			}
+			cmd := exec.Command(path + "\\gui.exe")
+			if err := cmd.Run(); err != nil {
+				fmt.Println(err)
+			}
 		}),
 	))
 	go func() {
@@ -63,8 +71,8 @@ func main() {
 			if err == nil {
 				if !XP.FirstStart {
 					//duration.Round(time.Second).String()
-					var textLabel = strconv.FormatFloat(XP.Hours, 'f', 2, 64)
-					updateLabel(hello, textLabel)
+					//var textLabel = strconv.FormatFloat(XP.Hours, 'f', 2, 64)
+					//updateLabel(hello, "Running")
 				}
 				//updateLabel(hello, "test")
 			}

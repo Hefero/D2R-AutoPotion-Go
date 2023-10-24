@@ -35,7 +35,7 @@ type Manager struct {
 type ExperienceCalc struct {
 	XP           [20]int
 	XP_aux       [20]int
-	XParray      [20]float32
+	XParray      [20]float64
 	XPbefore     int     `default:"0"`
 	IndexUpdated int     `default:"0"`
 	first30s     bool    `default:"true"`
@@ -103,7 +103,7 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 					for i := 0; i < len(XP.XParray); i++ {
 						XP.XParray[i] = 0
 						for j := 0; j < i; j++ {
-							XP.XParray[i] += float32((XP.XP[j] / i)) / 100000
+							XP.XParray[i] += float64((XP.XP[j] / i)) / 100000
 						}
 						if (i%2) > 0 && i < 7 {
 							fmt.Printf(" xp_%d:%3.2fM", i, XP.XParray[i]*4)
@@ -124,13 +124,16 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 						log.Fatal(err)
 					}
 					defer f.Close()
-					_, err2 := f.WriteString(strconv.FormatFloat(XP.Hours, 'f', -1, 64))
+					duration := time.Duration(time.Duration(XP.Minutes) * time.Minute).Round(time.Minute).String()
+					durationTrim := duration[:len(duration)-2]
+					stringWrite := durationTrim + " @ " + strconv.FormatFloat(XP.XParray[XP.IndexUpdated], 'f', 2, 64)
+					_, err2 := f.WriteString(stringWrite)
 
 					if err2 != nil {
 						log.Fatal(err2)
 					}
 
-					fmt.Printf(" tnl:%2.2f H", XP.Hours)
+					fmt.Printf(" tnl:%s", stringWrite)
 					if XP.IndexUpdated < 19 {
 						XP.IndexUpdated++
 					}
