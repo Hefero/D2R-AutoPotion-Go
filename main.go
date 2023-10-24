@@ -54,37 +54,23 @@ func main() {
 	ctx := contextWithSigterm(context.Background())
 
 	var cmd *exec.Cmd
+	path, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
 
 	hello := widget.NewLabel("Diablo 2 Ressurrected AutoPotion")
 	w.SetContent(container.NewVBox(
 		hello,
 		widget.NewButton("Start", func() {
-			path, err := os.Getwd()
-			if err != nil {
-				log.Println(err)
-			}
 			cmd = exec.Command(path + "\\gui.exe")
-			if err := cmd.Run(); err != nil {
-				fmt.Println(err)
-			}
+			cmd.Start()
+			go task(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
+		}),
+		widget.NewButton("Reset", func() {
+			lifewatcher.ResetXPCalc(&XP)
 		}),
 	))
-	go func() {
-		for {
-			watcher, err = StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
-			//if err != nil {
-			//	hello.SetText(err.Error())
-			//}
-			if err == nil {
-				if !XP.FirstStart {
-					//duration.Round(time.Second).String()
-					//var textLabel = strconv.FormatFloat(XP.Hours, 'f', 2, 64)
-					//updateLabel(hello, "Running")
-				}
-				//updateLabel(hello, "test")
-			}
-		}
-	}()
 
 	w.ShowAndRun()
 
@@ -93,6 +79,13 @@ func main() {
 		cmd.Process.Kill()
 	}()
 
+}
+
+func task(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) {
+	ticker := time.NewTicker(time.Second * 1)
+	for range ticker.C {
+		watcher.Start(ctx, manager, XP, audioBufferL, audioBufferM, audioBufferR)
+	}
 }
 
 func updateLabel(label *widget.Label, text string) {

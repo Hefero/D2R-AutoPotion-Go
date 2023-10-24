@@ -199,6 +199,24 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 
 }
 
+func ResetXPCalc(XP *ExperienceCalc) {
+	for i := range XP.XP {
+		XP.XP[i] = 0
+	}
+	for j := range XP.XParray {
+		XP.XParray[j] = 0
+	}
+	for k := range XP.XP {
+		XP.XP[k] = 0
+	}
+	XP.XPbefore = 0
+	XP.IndexUpdated = 0
+	XP.first30s = true
+	XP.FirstStart = true
+	XP.Minutes = 0
+	XP.Hours = 0
+}
+
 func InitAudio(path string) (*beep.Buffer, error) {
 	f, err := os.Open(path)
 	if err != nil {
