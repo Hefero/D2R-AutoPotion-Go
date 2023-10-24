@@ -15,6 +15,7 @@ import (
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/config"
 	"github.com/Hefero/D2R-AutoPotion-Go/cmd/lifewatcher"
 	"github.com/Hefero/D2R-AutoPotion-Go/pkg/memory"
+	"github.com/faiface/beep"
 )
 
 func main() {
@@ -42,6 +43,10 @@ func main() {
 		process, err = memory.NewProcess()
 	}
 
+	audioBufferL, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/life.wav")
+	audioBufferM, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/mana.wav")
+	audioBufferR, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/rejuv.wav")
+
 	gr := memory.NewGameReader(process)
 
 	watcher := lifewatcher.NewWatcher(gr)
@@ -64,7 +69,7 @@ func main() {
 	))
 	go func() {
 		for {
-			watcher, err = StartWatcher(*watcher, ctx, &manager, &XP)
+			watcher, err = StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
 			//if err != nil {
 			//	hello.SetText(err.Error())
 			//}
@@ -87,8 +92,8 @@ func updateLabel(label *widget.Label, text string) {
 	label.SetText(text)
 }
 
-func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc) (*lifewatcher.Watcher, error) {
-	err := watcher.Start(ctx, manager, XP)
+func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) (*lifewatcher.Watcher, error) {
+	err := watcher.Start(ctx, manager, XP, audioBufferL, audioBufferM, audioBufferR)
 	return &watcher, err
 }
 

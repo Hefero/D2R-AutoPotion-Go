@@ -48,10 +48,7 @@ func NewWatcher(gr *memory.GameReader) *Watcher {
 	return &Watcher{Gr: gr}
 }
 
-func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCalc) error {
-	audioBufferL, err := initAudio("cmd/lifewatcher/assets/life.wav")
-	audioBufferM, err := initAudio("cmd/lifewatcher/assets/mana.wav")
-	audioBufferR, err := initAudio("cmd/lifewatcher/assets/rejuv.wav")
+func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) error {
 
 	d, err := w.Gr.GetData()
 	if err != nil {
@@ -202,7 +199,7 @@ func (w *Watcher) Start(ctx context.Context, manager *Manager, XP *ExperienceCal
 
 }
 
-func initAudio(path string) (*beep.Buffer, error) {
+func InitAudio(path string) (*beep.Buffer, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
