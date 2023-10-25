@@ -65,7 +65,7 @@ func main() {
 		widget.NewButton("Start", func() {
 			cmd = exec.Command(path + "\\gui.exe")
 			cmd.Start()
-			go task(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
+			go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
 		}),
 		widget.NewButton("Reset", func() {
 			lifewatcher.ResetXPCalc(&XP)
@@ -81,8 +81,8 @@ func main() {
 
 }
 
-func task(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) {
-	ticker := time.NewTicker(time.Second * 1)
+func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) {
+	ticker := time.NewTicker(time.Nanosecond * 1)
 	for range ticker.C {
 		watcher.Start(ctx, manager, XP, audioBufferL, audioBufferM, audioBufferR)
 	}
@@ -90,11 +90,6 @@ func task(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher
 
 func updateLabel(label *widget.Label, text string) {
 	label.SetText(text)
-}
-
-func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) (*lifewatcher.Watcher, error) {
-	err := watcher.Start(ctx, manager, XP, audioBufferL, audioBufferM, audioBufferR)
-	return &watcher, err
 }
 
 func contextWithSigterm(ctx context.Context) context.Context {

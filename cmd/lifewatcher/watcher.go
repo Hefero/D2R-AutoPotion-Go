@@ -215,6 +215,15 @@ func ResetXPCalc(XP *ExperienceCalc) {
 	XP.FirstStart = true
 	XP.Minutes = 0
 	XP.Hours = 0
+	f, err := os.Create("data.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	_, err2 := f.WriteString("  0.00")
+	if err2 != nil {
+		log.Fatal(err2)
+	}
 }
 
 func InitAudio(path string) (*beep.Buffer, error) {
