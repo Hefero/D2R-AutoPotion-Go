@@ -33,23 +33,9 @@ func main() {
 		log.Fatalf("Error loading configuration file config.yaml: %s", errL.Error())
 	}
 
-	process, err := memory.NewProcess()
-	for err != nil {
-		if err != nil {
-			fmt.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds\n", err.Error())
-			fmt.Print("\033[A")
-		}
-		time.Sleep(5 * time.Second)
-		process, err = memory.NewProcess()
-	}
-
 	audioBufferL, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/life.wav")
 	audioBufferM, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/mana.wav")
 	audioBufferR, err := lifewatcher.InitAudio("cmd/lifewatcher/assets/rejuv.wav")
-
-	gr := memory.NewGameReader(process)
-
-	watcher := lifewatcher.NewWatcher(gr)
 
 	ctx := contextWithSigterm(context.Background())
 
@@ -57,12 +43,24 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	cmd := exec.Command(path + "\\gui.exe")
+	var cmd *exec.Cmd
+	cmd = exec.Command(path + "\\gui.exe")
 
 	hello := widget.NewLabel("Diablo 2 Ressurrected AutoPotion")
 	w.SetContent(container.NewVBox(
 		hello,
 		widget.NewButton("Start", func() {
+			process, err := memory.NewProcess()
+
+			if err != nil {
+				fmt.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds\n", err.Error())
+				fmt.Print("\033[A")
+			}
+
+			gr := memory.NewGameReader(process)
+
+			watcher := lifewatcher.NewWatcher(gr)
+
 			if cmd.Process == nil {
 				cmd = exec.Command(path + "\\gui.exe")
 				cmd.Start()
@@ -72,7 +70,7 @@ func main() {
 				cmd = exec.Command(path + "\\gui.exe")
 				cmd.Start()
 			}
-			go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
+			go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR, path)
 		}),
 		widget.NewButton("Reset", func() {
 			lifewatcher.ResetXPCalc(&XP)
@@ -88,7 +86,7 @@ func main() {
 
 }
 
-func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer) {
+func StartWatcher(watcher lifewatcher.Watcher, ctx context.Context, manager *lifewatcher.Manager, XP *lifewatcher.ExperienceCalc, audioBufferL *beep.Buffer, audioBufferM *beep.Buffer, audioBufferR *beep.Buffer, path string) {
 	ticker := time.NewTicker(time.Nanosecond * 1)
 	for range ticker.C {
 		watcher.Start(ctx, manager, XP, audioBufferL, audioBufferM, audioBufferR)
