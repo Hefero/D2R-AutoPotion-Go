@@ -53,18 +53,25 @@ func main() {
 
 	ctx := contextWithSigterm(context.Background())
 
-	var cmd *exec.Cmd
 	path, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 	}
+	cmd := exec.Command(path + "\\gui.exe")
 
 	hello := widget.NewLabel("Diablo 2 Ressurrected AutoPotion")
 	w.SetContent(container.NewVBox(
 		hello,
 		widget.NewButton("Start", func() {
-			cmd = exec.Command(path + "\\gui.exe")
-			cmd.Start()
+			if cmd.Process == nil {
+				cmd = exec.Command(path + "\\gui.exe")
+				cmd.Start()
+			}
+			if cmd.Process != nil {
+				cmd.Process.Kill()
+				cmd = exec.Command(path + "\\gui.exe")
+				cmd.Start()
+			}
 			go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR)
 		}),
 		widget.NewButton("Reset", func() {
