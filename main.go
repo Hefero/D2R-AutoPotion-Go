@@ -53,24 +53,26 @@ func main() {
 			process, err := memory.NewProcess()
 
 			if err != nil {
-				fmt.Printf("error starting process: player needs to be inside a running game %s, retrying in 5 seconds\n", err.Error())
+				fmt.Printf("error starting process: player needs to be inside a running game\n")
 				fmt.Print("\033[A")
 			}
+			if err == nil {
 
-			gr := memory.NewGameReader(process)
+				gr := memory.NewGameReader(process)
 
-			watcher := lifewatcher.NewWatcher(gr)
+				watcher := lifewatcher.NewWatcher(gr)
 
-			if cmd.Process == nil {
-				cmd = exec.Command(path + "\\gui.exe")
-				cmd.Start()
+				if cmd.Process == nil {
+					cmd = exec.Command(path + "\\gui.exe")
+					cmd.Start()
+				}
+				if cmd.Process != nil {
+					cmd.Process.Kill()
+					cmd = exec.Command(path + "\\gui.exe")
+					cmd.Start()
+				}
+				go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR, path)
 			}
-			if cmd.Process != nil {
-				cmd.Process.Kill()
-				cmd = exec.Command(path + "\\gui.exe")
-				cmd.Start()
-			}
-			go StartWatcher(*watcher, ctx, &manager, &XP, audioBufferL, audioBufferM, audioBufferR, path)
 		}),
 		widget.NewButton("Reset", func() {
 			lifewatcher.ResetXPCalc(&XP)
