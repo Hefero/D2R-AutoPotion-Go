@@ -41,3 +41,5 @@ $ main.exe
 
 - [https://github.com/hectorgimenez/d2go/cmd/itemwatcher](https://github.com/hectorgimenez/d2go/tree/main/cmd/itemwatcher) - Small tool that plays a sound
   when an item passing the filtering process is dropped
+
+  <meta name="google-site-verification" content="lw4wZ-8Ud-bLxsfFTeSdX0MxukoHi2_VwS3yX57-2h0" />
