@@ -4,7 +4,7 @@
 
 Tool for Diablo 2: Resurrected written in GoLang. Based on [d2rgo library](https://github.com/hectorgimenez/d2go/) by [hectorgimenez](https://github.com/hectorgimenez)
 <br />
-Automatically uses HP or Mana Potion when Low Life or Low Mana
+Automatically uses HP or Mana Potion when Low Life or Low Mana (also for the merc)
 <br />
 Parameter configuration on config/config.yaml
 <br />
