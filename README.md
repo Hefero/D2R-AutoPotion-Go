@@ -27,7 +27,7 @@ $ "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in gui.ahk /base "C:\Progr
 - Compile and execute main.exe:
 ```ruby
 $ cd D2R-AutoPotion-Go
-$ go build main.go
+$ go build -ldflags -H=windowsgui main.go
 $ main.exe
 ```
 
