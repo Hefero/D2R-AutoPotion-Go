@@ -22,7 +22,7 @@ $ git clone https://github.com/Hefero/D2R-AutoPotion-Go
 - Install [Autohotkey](https://www.autohotkey.com/) and compile gui.ahk using Ahk v2
 - That can be done via below command line on windows prompt or right click on gui.ahk -> More options -> Compile script (GUI) and select V2 as base file
 ```ruby
-$ "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in gui.ahk /base "C:\Program Files\AutoHotkey\v2\AutoHotkey32.exe"
+$ "C:\Program Files\AutoHotkey\Compiler\Ahk2Exe.exe" /in gui.ahk /base "C:\Program Files\AutoHotkey\v2\AutoHotkey64.exe"
 ```
 - Compile and execute main.exe:
 ```ruby
